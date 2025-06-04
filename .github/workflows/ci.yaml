@@ -20,8 +20,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install dev dependencies
-        run: npm install --save-dev jest @testing-library/react @testing-library/jest-dom @testing-library/react-hooks@8.1.1
+      - name: Install test libraries
+        run: |
+              npm install --save-dev jest @testing-library/react @testing-library/jest-dom @testing-library/react-hooks@8.1.0
       
       - name: Run tests
         run: npm run test
