@@ -188,7 +188,7 @@ export default function HomePage() {
           <span className="font-semibold">Room Reservation App</span>
           <Star className="w-4 h-4 text-yellow-500" />
         </div>
-        <p className="text-sm">© 2025 - Reservasi Ruangan Terpercaya</p>
+        <p className="text-sm">Reservasi Ruangan CCWS Terpercaya</p>
       </footer>
     </div>
   );
