@@ -124,7 +124,7 @@ export default function HomePage() {
                 <div className="text-sm text-gray-600">Ruangan</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-700">10k+</div>
+                <div className="text-2xl font-bold text-purple-700">Efektif</div>
                 <div className="text-sm text-gray-600">Reservasi</div>
               </div>
               <div className="text-center">
