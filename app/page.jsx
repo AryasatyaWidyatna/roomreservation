@@ -120,7 +120,7 @@ export default function HomePage() {
 
             <div className="grid grid-cols-3 gap-6 mt-8">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-700">500+</div>
+                <div className="text-2xl font-bold text-blue-700">4</div>
                 <div className="text-sm text-gray-600">Ruangan</div>
               </div>
               <div className="text-center">
