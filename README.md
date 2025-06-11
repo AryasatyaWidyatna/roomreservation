@@ -16,11 +16,52 @@ Pipeline bergantung pada beberapa nilai konfigurasi sensitif yang harus disimpan
 
 ## Alur Kerja Pipeline CI/CD
 
-Pipeline akan aktif secara otomatis setiap kali kode di-push ke branch main, memastikan bahwa semua perubahan melalui proses pengujian dan deployment yang lengkap. Job pengujian dimulai dengan checkout kode repository dan menyiapkan Node.js versi 18 sebagai lingkungan runtime. Kemudian membersihkan cache npm untuk memastikan lingkungan instalasi yang segar, menginstal semua dependensi menggunakan npm ci untuk instalasi yang lebih cepat dan dapat diandalkan, dan menjalankan suite pengujian menggunakan npm run test untuk memverifikasi fungsionalitas kode.
+Job: test (Continuous Integration)
+Job test bertanggung jawab untuk memverifikasi kualitas dan fungsionalitas kode.
 
-Job build menunggu penyelesaian job pengujian yang berhasil sebelum melanjutkan, menjaga integritas pipeline. Job ini melakukan checkout repository lagi, menyiapkan lingkungan Node.js, dan menginstal dependensi. Job kemudian mengkonfigurasi variabel lingkungan dari GitHub Secrets, membangun aplikasi Next.js untuk produksi, membuat image Docker yang berisi aplikasi, dan mendorong image ini ke Azure Container Registry untuk penyimpanan dan deployment.
+Checkout repository: Kode dari repositori di-checkout ke runner.
 
-Job deployment mewakili tahap akhir, menunggu job build selesai dengan sukses sebelum dieksekusi. Job ini melakukan checkout repository sekali lagi dan menggunakan action deployment Azure Web Apps untuk melakukan deploy image Docker dari container registry ke Azure Web App CCWSRESERVE, membuat aplikasi live dan dapat diakses oleh pengguna.
+Setup Node.js: Lingkungan Node.js versi 18 disiapkan.
+
+Install dependencies: Dependensi proyek diinstal menggunakan npm ci untuk instalasi yang bersih dan konsisten.
+
+Clean npm cache: Cache npm dibersihkan untuk memastikan lingkungan instalasi yang segar.
+
+Run tests: Suite pengujian dijalankan menggunakan npm run test untuk memverifikasi fungsionalitas kode.
+
+Job: build (Build Container Image)
+Job build menunggu penyelesaian job test yang berhasil sebelum melanjutkan, menjaga integritas pipeline. Job ini bertugas membuat bundle aplikasi dan mengemasnya ke dalam Docker image.
+
+Checkout repository: Kode dari repositori di-checkout lagi.
+
+Setup Node.js: Lingkungan Node.js versi 18 disiapkan.
+
+Install dependencies: Dependensi proyek diinstal menggunakan npm ci.
+
+Build Next.js app: Aplikasi Next.js dibangun untuk produksi menggunakan npm run build.
+
+Check Next.js version: Memverifikasi versi Next.js yang digunakan.
+
+Log in to Azure Container Registry: Melakukan login ke Azure Container Registry (ACR) menggunakan AZURE_REGISTRY_USERNAME dan AZURE_REGISTRY_PASSWORD yang disimpan sebagai GitHub Secrets.
+
+Build Docker image: Membuat Docker image dari aplikasi dengan tag latest dan URL registri ACR.
+
+Push Docker image to ACR: Mendorong (push) Docker image yang baru dibuat ke Azure Container Registry untuk penyimpanan.
+
+Job: deploy (Continuous Deployment)
+Job deploy mewakili tahap akhir, menunggu job build selesai dengan sukses sebelum dieksekusi. Job ini bertugas mendeploy Docker image ke Azure Web App.
+
+Checkout repo: Kode dari repositori di-checkout.
+
+Deploy to Azure Web App: Menggunakan action azure/webapps-deploy@v2 untuk melakukan deployment.
+
+app-name: Menentukan nama Azure Web App yang akan dituju, yaitu CCWSRESERVE.
+
+slot-name: Menentukan slot deployment yang akan digunakan, yaitu Production.
+
+publish-profile: Menggunakan AZURE_WEBAPP_PUBLISH_PROFILE dari GitHub Secrets untuk autentikasi deployment.
+
+images: Mengacu pada Docker image yang akan di-deploy, yaitu nextjs-app:latest dari AZURE_REGISTRY_URL. Ini membuat aplikasi live dan dapat diakses oleh pengguna.
 
 ## Konfigurasi Docker
 
