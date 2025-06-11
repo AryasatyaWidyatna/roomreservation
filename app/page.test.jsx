@@ -1,65 +1,55 @@
-const React = require('react');
-const { render, screen } = require('@testing-library/react');
-const HomePage = require('./page').default;
-require('@testing-library/jest-dom');
+/**
+ * @jest-environment jsdom
+ */
+import { render, screen } from '@testing-library/react';
+import HomePage from '../app/page'; // sesuaikan path jika berbeda
+import '@testing-library/jest-dom';
 
-// Mock next/link
-jest.mock('next/link', () => {
-  return function Link({ children }) {
-    return children;
-  };
-});
+describe('HomePage Component', () => {
+  test('renders main heading and subheading', () => {
+    render(<HomePage />);
 
-// Mock lucide-react icons without JSX
-jest.mock('lucide-react', () => {
-  const React = require('react');
-  return {
-    Calendar: () => React.createElement('div', { 'data-testid': 'icon-calendar' }),
-    Clock: () => React.createElement('div', { 'data-testid': 'icon-clock' }),
-    MapPin: () => React.createElement('div', { 'data-testid': 'icon-mappin' }),
-    Users: () => React.createElement('div', { 'data-testid': 'icon-users' }),
-    Star: () => React.createElement('div', { 'data-testid': 'icon-star' }),
-    ArrowRight: () => React.createElement('div', { 'data-testid': 'icon-arrowright' }),
-    Building2: () => React.createElement('div', { 'data-testid': 'icon-building2' }),
-    Wifi: () => React.createElement('div', { 'data-testid': 'icon-wifi' }),
-    Car: () => React.createElement('div', { 'data-testid': 'icon-car' }),
-    Coffee: () => React.createElement('div', { 'data-testid': 'icon-coffee' }),
-    UserPlus: () => React.createElement('div', { 'data-testid': 'icon-userplus' }),
-  };
-});
+    expect(
+      screen.getByRole('heading', { name: /Room Reservation/i })
+    ).toBeInTheDocument();
 
-describe('HomePage', () => {
-  it('renders main heading correctly', () => {
-    render(React.createElement(HomePage));
-    expect(screen.getByText(/Room Reservation/i)).toBeInTheDocument();
-    expect(screen.getByText(/CCWS/i)).toBeInTheDocument();
+    expect(screen.getByText(/Silakan masuk sebagai/i)).toBeInTheDocument();
   });
 
-  it('shows registration and login buttons', () => {
-    render(React.createElement(HomePage));
-    expect(screen.getByText(/Daftar sebagai Client/i)).toBeInTheDocument();
-    expect(screen.getByText(/Login sebagai Client/i)).toBeInTheDocument();
+  test('renders Daftar dan Login button', () => {
+    render(<HomePage />);
+
+    expect(
+      screen.getByRole('button', { name: /Daftar sebagai Client/i })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', { name: /Login sebagai Client/i })
+    ).toBeInTheDocument();
   });
 
-  it('renders feature titles', () => {
-    render(React.createElement(HomePage));
-    expect(screen.getByText(/Booking Mudah/i)).toBeInTheDocument();
-    expect(screen.getByText(/24\/7 Available/i)).toBeInTheDocument();
-    expect(screen.getByText(/Lokasi Strategis/i)).toBeInTheDocument();
-    expect(screen.getByText(/Tim Support/i)).toBeInTheDocument();
+  test('renders features section', () => {
+    render(<HomePage />);
+
+    expect(screen.getByText('Booking Mudah')).toBeInTheDocument();
+    expect(screen.getByText('24/7 Available')).toBeInTheDocument();
+    expect(screen.getByText('Lokasi Strategis')).toBeInTheDocument();
+    expect(screen.getByText('Tim Support')).toBeInTheDocument();
   });
 
-  it('renders amenities labels', () => {
-    render(React.createElement(HomePage));
-    expect(screen.getByText(/High-Speed WiFi/i)).toBeInTheDocument();
-    expect(screen.getByText(/Parking Area/i)).toBeInTheDocument();
-    expect(screen.getByText(/Refreshments/i)).toBeInTheDocument();
-    expect(screen.getByText(/Modern Facilities/i)).toBeInTheDocument();
+  test('renders amenities section', () => {
+    render(<HomePage />);
+
+    expect(screen.getByText('High-Speed WiFi')).toBeInTheDocument();
+    expect(screen.getByText('Parking Area')).toBeInTheDocument();
+    expect(screen.getByText('Refreshments')).toBeInTheDocument();
+    expect(screen.getByText('Modern Facilities')).toBeInTheDocument();
   });
 
-  it('renders footer text', () => {
-    render(React.createElement(HomePage));
-    expect(screen.getByText(/Room Reservation App/i)).toBeInTheDocument();
+  test('renders footer content', () => {
+    render(<HomePage />);
+    
+    expect(screen.getByText('Room Reservation App')).toBeInTheDocument();
     expect(screen.getByText(/Reservasi Ruangan CCWS Terpercaya/i)).toBeInTheDocument();
   });
 });
