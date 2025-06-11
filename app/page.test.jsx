@@ -1,7 +1,7 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import HomePage from 'page.jsx';
-import '@testing-library/jest-dom';
+const React = require('react');
+const { render, screen } = require('@testing-library/react');
+const HomePage = require('./page').default;
+require('@testing-library/jest-dom');
 
 // Mock next/link
 jest.mock('next/link', () => {
@@ -10,7 +10,7 @@ jest.mock('next/link', () => {
   };
 });
 
-// Mock lucide-react icons using React.createElement instead of JSX
+// Mock lucide-react icons without JSX
 jest.mock('lucide-react', () => {
   const React = require('react');
   return {
