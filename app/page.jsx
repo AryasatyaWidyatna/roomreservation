@@ -15,6 +15,10 @@ import {
   Coffee,
   UserPlus
 } from 'lucide-react';
+// app/_not-found/page.jsx
+import React from 'react'; // WAJIB untuk JSX jika Babel digunakan
+
+
 
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
