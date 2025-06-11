@@ -45,12 +45,14 @@ export default function HomePage() {
   ];
 
   useEffect(() => {
-    setIsVisible(true);
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  setIsVisible(true);
+  const interval = setInterval(() => {
+    setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+  }, 5000);
+  return () => clearInterval(interval);
+}, [heroImages.length]);
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
