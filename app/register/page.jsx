@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { User, Mail, Lock, ArrowRight, Building2, AlertCircle, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
+import React from 'react';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');

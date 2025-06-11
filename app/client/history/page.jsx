@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import ProtectedPageWrapper from '@/components/ProtectedPageWrapper';
+import React from 'react';
 
 export default function Page() {
   return (
