@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+import React from 'react'; // ← ini penting untuk CI-mu
 
 export default function NotFound() {
   return (
