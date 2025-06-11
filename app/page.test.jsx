@@ -52,6 +52,6 @@ describe('HomePage Component', () => {
     render(<HomePage />);
     
     expect(screen.getByText('Room Reservation App')).toBeInTheDocument();
-    expect(screen.getByText(/Reservasi Ruangan CCWS Terpercaya/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reserve Ruangan CCWS Terpercaya/i)).toBeInTheDocument();
   });
 });
