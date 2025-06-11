@@ -29,7 +29,10 @@ Clean npm cache: Cache npm dibersihkan untuk memastikan lingkungan instalasi yan
 
 Run tests: Suite pengujian dijalankan menggunakan npm run test untuk memverifikasi fungsionalitas kode.
 
+
+
 Job: build (Build Container Image)
+
 Job build menunggu penyelesaian job test yang berhasil sebelum melanjutkan, menjaga integritas pipeline. Job ini bertugas membuat bundle aplikasi dan mengemasnya ke dalam Docker image.
 
 Checkout repository: Kode dari repositori di-checkout lagi.
@@ -48,7 +51,10 @@ Build Docker image: Membuat Docker image dari aplikasi dengan tag latest dan URL
 
 Push Docker image to ACR: Mendorong (push) Docker image yang baru dibuat ke Azure Container Registry untuk penyimpanan.
 
+
+
 Job: deploy (Continuous Deployment)
+
 Job deploy mewakili tahap akhir, menunggu job build selesai dengan sukses sebelum dieksekusi. Job ini bertugas mendeploy Docker image ke Azure Web App.
 
 Checkout repo: Kode dari repositori di-checkout.
