@@ -1,4 +1,4 @@
-// File: app/admin/rooms/page.jsx
+
 'use client';
 import React from 'react';
 
