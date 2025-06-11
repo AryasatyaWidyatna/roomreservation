@@ -15,7 +15,7 @@ export default function ProtectedPageWrapper({ children }) {
         setLoading(false);
       }
     });
-  }, []);
+  }, [router]); // ✅ tambahkan router di dependency array
 
   if (loading) return <p>Loading...</p>;
   return <>{children}</>;
