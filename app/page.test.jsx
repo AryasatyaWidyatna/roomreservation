@@ -4,6 +4,8 @@
 import { render, screen } from '@testing-library/react';
 import HomePage from '../app/page'; // sesuaikan path jika berbeda
 import '@testing-library/jest-dom';
+import React from 'react';
+
 
 describe('HomePage Component', () => {
   test('renders main heading and subheading', () => {
