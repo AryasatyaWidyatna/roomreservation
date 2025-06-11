@@ -1,11 +1,13 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import HomePage from 'page.jsx'; // Sesuaikan path jika file ada di lokasi lain
+import HomePage from 'page.jsx'; 
 import '@testing-library/jest-dom';
 
 // Mock next/link
 jest.mock('next/link', () => {
-  return ({ children }: { children: React.ReactNode }) => children;
+  return function Link({ children }) {
+    return children;
+  };
 });
 
 // Mock lucide-react icons
