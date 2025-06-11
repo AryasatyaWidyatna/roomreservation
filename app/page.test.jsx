@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import HomePage from '../app/page'; // Sesuaikan path jika file ada di lokasi lain
+import HomePage from 'page.jsx'; // Sesuaikan path jika file ada di lokasi lain
 import '@testing-library/jest-dom';
 
 // Mock next/link
