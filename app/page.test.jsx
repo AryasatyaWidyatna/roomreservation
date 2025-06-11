@@ -22,7 +22,7 @@ describe('HomePage Component', () => {
     render(<HomePage />);
 
     expect(
-      screen.getByRole('button', { name: /Daftar sebagai Client/i })
+      screen.getByRole('button', { name: /Regist sebagai Client/i })
     ).toBeInTheDocument();
 
     expect(
