@@ -1,6 +1,6 @@
 'use client';
-import React from 'react';
 
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import ProtectedPageWrapper from '@/components/ProtectedPageWrapper';
