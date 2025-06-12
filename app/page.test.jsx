@@ -12,7 +12,7 @@ describe('HomePage Component', () => {
     render(<HomePage />);
 
     expect(
-      screen.getByRole('heading', { name: /Room Reservation/i })
+      screen.getByRole('heading', { name: /CCWS Reservation/i })
     ).toBeInTheDocument();
 
     expect(screen.getByText(/Silakan masuk sebagai/i)).toBeInTheDocument();
