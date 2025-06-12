@@ -99,7 +99,7 @@ export default function HomePage() {
 
             <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-blue-700 via-purple-700 to-indigo-700 bg-clip-text text-transparent mb-6 leading-tight">
               CCWS Reservation
-              <span className="block text-4xl md:text-5xl mt-2">CCWS</span>
+              <span className="block text-4xl md:text-5xl mt-2">App</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-2xl mx-auto font-medium">
