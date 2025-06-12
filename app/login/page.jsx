@@ -53,7 +53,7 @@ export default function LoginPage() {
               </div>
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-700 via-purple-700 to-indigo-700 bg-clip-text text-transparent mb-2">
-              Masuk Aku
+              Masuk Akun
             </h1>
             <p className="text-gray-600">Selamat datang kembali!</p>
           </div>
