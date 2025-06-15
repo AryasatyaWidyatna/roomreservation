@@ -84,7 +84,7 @@ function ClientHistory() {
               <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
                 Dashboard
               </a>
-              <a href="#" className="text-gray-900 bg-gray-100 px-3 py-2 rounded-md text-sm font-medium">
+              <a href="../reserve" className="text-gray-900 bg-gray-100 px-3 py-2 rounded-md text-sm font-medium">
                 Riwayat Reservasi
               </a>
               <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
