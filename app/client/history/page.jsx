@@ -57,7 +57,9 @@ function ClientHistory() {
   }, []);
 
   if (loading) return <p>Loading...</p>;
-  <div className="hidden md:flex items-center space-x-8">
+  
+  return (
+    <div className="hidden md:flex items-center space-x-8">
               <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
                 Dashboard
               </a>
@@ -67,10 +69,7 @@ function ClientHistory() {
               <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
                 Buat Reservasi
               </a>
-            </div>
-
-
-  return (
+    </div>
     <div className="p-4 space-y-4">
       <h1 className="text-xl font-bold mb-4">Riwayat Reservasi Anda</h1>
 
