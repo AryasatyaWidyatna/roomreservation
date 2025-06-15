@@ -6,12 +6,18 @@ import { supabase } from '@/lib/supabaseClient';
 import ProtectedPageWrapper from '@/components/ProtectedPageWrapper';
 import React from 'react';
 
-// File: /components/Navbar.jsx
-'use client';
 
 import Link from 'next/link';
 
-export default function Navbar() {
+export default function Page() {
+  return (
+    <ProtectedPageWrapper>
+      <ClientHistory />
+    </ProtectedPageWrapper>
+  );
+}
+
+function Navbar() {
   return (
     <nav className="bg-blue-600 text-white px-4 py-3 shadow mb-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -23,15 +29,6 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  );
-}
-
-
-export default function Page() {
-  return (
-    <ProtectedPageWrapper>
-      <ClientHistory />
-    </ProtectedPageWrapper>
   );
 }
 
