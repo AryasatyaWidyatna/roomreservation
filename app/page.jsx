@@ -15,8 +15,8 @@ import {
   Coffee,
   UserPlus
 } from 'lucide-react';
-// app/_not-found/page.jsx
-import React from 'react'; // WAJIB untuk JSX jika Babel digunakan
+
+import React from 'react';
 
 
 
@@ -98,8 +98,8 @@ export default function HomePage() {
             </div>
 
             <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-blue-700 via-purple-700 to-indigo-700 bg-clip-text text-transparent mb-6 leading-tight">
-              Room Reservation
-              <span className="block text-4xl md:text-5xl mt-2">CCWS</span>
+              CCWS Reservation
+              <span className="block text-4xl md:text-5xl mt-2">App</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-2xl mx-auto font-medium">
@@ -108,7 +108,7 @@ export default function HomePage() {
               <Link href="/register">
                 <button className="group relative bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center gap-3 text-lg">
                   <UserPlus className="w-5 h-5" />
-                  Daftar sebagai Client
+                  Regist sebagai Client
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
                 </button>
@@ -194,7 +194,7 @@ export default function HomePage() {
           <span className="font-semibold">Room Reservation App</span>
           <Star className="w-4 h-4 text-yellow-500" />
         </div>
-        <p className="text-sm">Reservasi Ruangan CCWS Terpercaya</p>
+        <p className="text-sm">Reserve Ruangan CCWS Terpercaya</p>
       </footer>
     </div>
   );

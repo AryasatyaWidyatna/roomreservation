@@ -12,7 +12,7 @@ describe('HomePage Component', () => {
     render(<HomePage />);
 
     expect(
-      screen.getByRole('heading', { name: /Room Reservation/i })
+      screen.getByRole('heading', { name: /CCWS Reservation/i })
     ).toBeInTheDocument();
 
     expect(screen.getByText(/Silakan masuk sebagai/i)).toBeInTheDocument();
@@ -22,7 +22,7 @@ describe('HomePage Component', () => {
     render(<HomePage />);
 
     expect(
-      screen.getByRole('button', { name: /Daftar sebagai Client/i })
+      screen.getByRole('button', { name: /Regist sebagai Client/i })
     ).toBeInTheDocument();
 
     expect(
@@ -52,6 +52,6 @@ describe('HomePage Component', () => {
     render(<HomePage />);
     
     expect(screen.getByText('Room Reservation App')).toBeInTheDocument();
-    expect(screen.getByText(/Reservasi Ruangan CCWS Terpercaya/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reserve Ruangan CCWS Terpercaya/i)).toBeInTheDocument();
   });
 });
