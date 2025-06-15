@@ -17,20 +17,6 @@ export default function Page() {
   );
 }
 
-function Navbar() {
-  return (
-    <nav className="bg-blue-600 text-white px-4 py-3 shadow mb-4">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <span className="font-bold text-lg">Reservasi App</span>
-        <div className="space-x-4">
-          <Link href="/" className="hover:underline">Beranda</Link>
-          <Link href="/history" className="hover:underline">Riwayat</Link>
-          <Link href="/logout" className="hover:underline">Logout</Link>
-        </div>
-      </div>
-    </nav>
-  );
-}
 
 function ClientHistory() {
   const [reservations, setReservations] = useState([]);
@@ -71,6 +57,18 @@ function ClientHistory() {
   }, []);
 
   if (loading) return <p>Loading...</p>;
+  <div className="hidden md:flex items-center space-x-8">
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                Dashboard
+              </a>
+              <a href="#" className="text-gray-900 bg-gray-100 px-3 py-2 rounded-md text-sm font-medium">
+                Riwayat Reservasi
+              </a>
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                Buat Reservasi
+              </a>
+            </div>
+
 
   return (
     <div className="p-4 space-y-4">
