@@ -42,6 +42,12 @@ function ReserveRoom() {
     }
   }, [message, error]);
 
+   const handleLogout = async () => {
+    await supabase.auth.signOut();
+    // Redirect atau refresh halaman setelah logout
+    window.location.reload();
+  };
+
   const handleReserve = async (roomId) => {
     setError('');
     setMessage('');
@@ -90,6 +96,8 @@ function ReserveRoom() {
       setMessage('Reservasi berhasil!');
     }
   };
+
+  
 
   if (loading) return <p>Loading...</p>;
 
