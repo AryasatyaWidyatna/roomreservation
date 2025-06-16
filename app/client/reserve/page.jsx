@@ -21,6 +21,7 @@ function ReserveRoom() {
   const [session, setSession] = useState('1');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
     const fetchRooms = async () => {
