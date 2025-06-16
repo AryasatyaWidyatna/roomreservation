@@ -116,10 +116,10 @@ function ReserveRoom() {
 
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="../client/reserve" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+              <a href="../client/history" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
                 Riwayat Reservasi
               </a>
-              <a href="../client/history" className="text-gray-900 bg-gray-100 px-3 py-2 rounded-md text-sm font-medium">
+              <a href="../client/reserve" className="text-gray-900 bg-gray-100 px-3 py-2 rounded-md text-sm font-medium">
                 Buat Reservasi
               </a>
             </div>
