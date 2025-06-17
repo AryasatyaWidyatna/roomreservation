@@ -1,103 +1,638 @@
-# Pipeline CI/CD Next.js dengan Deployment Azure
+# 🏨 CCWS Room Reservation
 
-Repository ini berisi aplikasi Next.js dengan pipeline CI/CD lengkap yang secara otomatis membangun, menguji, dan melakukan deployment ke Azure Web App menggunakan GitHub Actions dan Azure Container Registry. Sistem ini menyediakan alur kerja otomatis yang memastikan kualitas kode melalui pengujian, membangun aplikasi dalam bentuk container, dan melakukan deployment ke lingkungan produksi di Azure.
+![CI/CD](https://github.com/AryasatyaWidyatna/roomreservation/actions/workflows/ci-cd.yaml/badge.svg)
+[![Next.js](https://img.shields.io/badge/Next.js-13-blue)](https://nextjs.org/)
+[![Deploy to Azure](https://img.shields.io/badge/Azure-App%20Service-blue)](https://azure.microsoft.com)
 
-## Overview Arsitektur
+Sistem pemesanan ruang yang digunakan di lingkungan **CCWS** untuk mengatur jadwal dan ketersediaan ruangan. Aplikasi ini dibangun menggunakan **Next.js** dan di-*deploy* secara otomatis melalui pipeline **CI/CD GitHub Actions ke Azure App Service**.
 
-Proyek ini mengimplementasikan arsitektur pipeline tiga tahap yang mengikuti praktik DevOps modern. Tahap pertama berfokus pada menjalankan pengujian otomatis untuk memastikan kualitas dan fungsionalitas kode. Setelah pengujian berhasil dilakukan, tahap build membuat bundle aplikasi dan mengemasnya ke dalam image container Docker. Akhirnya, tahap deployment mengambil aplikasi yang sudah dikemas dan melakukan deployment ke layanan Azure Web App, membuatnya tersedia untuk pengguna akhir.
+📦 **Repository**: [CCWS Room Reservation (GitHub Repo)](https://github.com/AryasatyaWidyatna/roomreservation)
+🔗 **Live Demo**: [CCWS Room Reservation (Live Site)](https://ccwsreserve-ftcsf2fefghphxc2.indonesiacentral-01.azurewebsites.net)  
 
-## Prasyarat
+[![Preview](https://raw.githubusercontent.com/AryasatyaWidyatna/roomreservation/main/app/assets/preview.jpg)](https://ccwsreserve-ftcsf2fefghphxc2.indonesiacentral-01.azurewebsites.net)
 
-Sebelum mengimplementasikan pipeline ini, Anda perlu menyiapkan beberapa komponen dasar. Langganan Azure sangat penting, yang harus mencakup Azure Container Registry untuk menyimpan image Docker dan layanan Azure Web App untuk hosting aplikasi. Selain itu, Anda memerlukan proyek Supabase yang dikonfigurasi untuk operasi database dan repository GitHub dengan Actions yang diaktifkan untuk menjalankan workflow CI/CD.
+---
+## 📌 Scope & Objectives
 
-## Konfigurasi GitHub Secrets yang Diperlukan
+- **Lingkup**:
+  - Frontend menggunakan Next.js
+  - Backend menggunakan Supabase
+  - CI/CD menggunakan GitHub Actions
+  - Deployment ke Azure App Service dengan Docker container
+- **Tujuan**:
+  - Otomatisasi build, test, dan deploy
+  - Monitoring kesehatan deployment
+  - Fleksibilitas untuk dikembangkan lebih lanjut (eks: login, integrasi SSO)
 
-Pipeline bergantung pada beberapa nilai konfigurasi sensitif yang harus disimpan sebagai GitHub Secrets untuk menjaga keamanan. Untuk integrasi Supabase, Anda perlu mengkonfigurasi NEXT_PUBLIC_SUPABASE_URL dengan URL proyek Supabase Anda dan NEXT_PUBLIC_SUPABASE_ANON_KEY dengan kunci anonim Supabase Anda. Azure Container Registry memerlukan tiga secrets: AZURE_REGISTRY_URL yang berisi alamat server login ACR Anda, AZURE_REGISTRY_USERNAME untuk autentikasi, dan AZURE_REGISTRY_PASSWORD untuk akses yang aman. Terakhir, deployment Azure Web App memerlukan AZURE_WEBAPP_PUBLISH_PROFILE, yang berisi profil publikasi yang diunduh dari layanan Azure Web App Anda.
+---
+## 🏗️ System Architecture
 
-## Alur Kerja Pipeline CI/CD
+Arsitektur sistem ini dirancang untuk mendukung alur kerja pengembangan web modern berbasis **Next.js**, dengan integrasi ke pipeline **CI/CD** otomatis menggunakan **GitHub Actions** serta deployment ke **Azure Web App Service**.
+```mermaid
+graph TD
+    A[Developer Push Code] --> B[GitHub Repository]
+    B --> C[CI/CD Pipeline]
 
-Job: test (Continuous Integration)
+    C --> D[Test Job]
+    D --> D1[Checkout Repo]
+    D1 --> D2[Setup Node.js v18]
+    D2 --> D3[Install Dependencies]
+    D3 --> D4[Run Tests]
 
-Job test bertanggung jawab untuk memverifikasi kualitas dan fungsionalitas kode.
+    D --> E[Build Job]
+    E --> E1[Checkout Repo]
+    E1 --> E2[Setup Node.js v18]
+    E2 --> E3[Install Dependencies]
+    E3 --> E4[Build Next.js App]
+    E4 --> E5[Login to ACR]
+    E5 --> E6[Build & Push Docker Image]
 
-1. Checkout repository: Kode dari repositori di-checkout ke runner.
+    E --> F[Deploy Job]
+    F --> F1[Checkout Repo]
+    F1 --> F2[Deploy to Azure Web App]
+````
+### 🧱 Komponen Utama Arsitektur:
 
-2. Setup Node.js: Lingkungan Node.js versi 18 disiapkan.
+1. **Frontend & Backend (Next.js Fullstack)**
 
-3. Install dependencies: Dependensi proyek diinstal menggunakan npm ci untuk instalasi yang bersih dan konsisten.
+   * Merupakan inti dari aplikasi, yang menggabungkan UI (React), API Routes (Serverless Functions), dan konfigurasi build modern menggunakan **Tailwind CSS**, **Vite**, serta modul modular di `components/`, `lib/`, dan `pages/`.
 
-4. Run tests: Suite pengujian dijalankan menggunakan npm run test untuk memverifikasi fungsionalitas kode.
+2. **Version Control: GitHub**
+
+   * Semua perubahan kode dilakukan melalui Git dan disimpan dalam GitHub repository.
+   * Setiap `push` ke branch `main` secara otomatis memicu pipeline CI/CD.
+
+3. **CI/CD: GitHub Actions**
+
+   * Pipeline dibagi menjadi tiga job utama:
+
+     * `Test Job`: Mengeksekusi unit test menggunakan Jest/Vitest.
+     * `Build Job`: Melakukan build Next.js dan membangun Docker image.
+     * `Deploy Job`: Melakukan deployment ke Azure setelah build berhasil.
+
+4. **Containerization: Docker + ACR**
+
+   * Aplikasi dibungkus dalam Docker image.
+   * Image didorong ke **Azure Container Registry (ACR)**.
+
+5. **Deployment: Azure App Service**
+
+   * Azure Web App akan menarik image terbaru dari ACR untuk di-deploy secara otomatis.
+   * Publish dilakukan via **Publish Profile** yang disimpan aman dalam GitHub Secrets.
+
+---
+
+## 🔄 CI/CD Workflow
+
+### 🧭 Diagram Alur CI/CD
+
+<p align="center">
+  <img src="./app/assets/flow.jpg" alt="CI/CD Workflow Diagram" width="700"/>
+</p>
+
+> Diagram ini menggambarkan orkestrasi proses Continuous Integration dan Continuous Deployment (CI/CD) pada aplikasi CCWS Room Reservation berbasis Next.js, Supabase, dan Azure.
+
+---
+
+### 🛠️ Tahapan Alur CI/CD
+
+CI/CD pipeline dibangun menggunakan **GitHub Actions** dan terdiri atas tiga tahapan utama: *Test*, *Build*, dan *Deploy*. Pipeline di-trigger secara otomatis setiap kali terjadi push ke branch `main`, memastikan *delivery* yang cepat dan minim error.
+
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
 
 
+#### 1. **CI/CD – Testing Stage**
 
-Job: build (Build Container Image)
+> *Tujuan: Menjamin kualitas kode dengan menjalankan automated tests*
 
-Job build menunggu penyelesaian job test yang berhasil sebelum melanjutkan, menjaga integritas pipeline. Job ini bertugas membuat bundle aplikasi dan mengemasnya ke dalam Docker image.
+* ✅ **Framework Testing:** Menggunakan **Jest** dan/atau **Vitest** untuk unit test dan coverage analysis.
+* 🔍 **Linting:** ESLint dijalankan untuk memastikan kualitas dan konsistensi coding style.
+* 📂 **File yang terlibat:**
 
-1. Checkout repository: Kode dari repositori di-checkout lagi.
+  * `jest.config.js`, `jest.setup.js`, `vitest.config.js`
+  * `.eslintrc.json`
+  * `components/`, `lib/`, `app/`
 
-2. Setup Node.js: Lingkungan Node.js versi 18 disiapkan.
+📌 *Jika terdapat kegagalan di tahap ini, proses akan dihentikan dan deployment tidak dilakukan.*
 
-3. Install dependencies: Dependensi proyek diinstal menggunakan npm ci.
-
-4. Build Next.js app: Aplikasi Next.js dibangun untuk produksi menggunakan npm run build.
-
-5. Check Next.js version: Memverifikasi versi Next.js yang digunakan.
-
-6. Log in to Azure Container Registry: Melakukan login ke Azure Container Registry (ACR) menggunakan AZURE_REGISTRY_USERNAME dan AZURE_REGISTRY_PASSWORD yang disimpan sebagai GitHub Secrets.
-
-7. Build Docker image: Membuat Docker image dari aplikasi dengan tag latest dan URL registri ACR.
-
-8. Push Docker image to ACR: Mendorong (push) Docker image yang baru dibuat ke Azure Container Registry untuk penyimpanan.
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
 
 
+#### 2. **CI/CD – Build Stage**
 
-Job: deploy (Continuous Deployment)
+> *Tujuan: Membangun dan mengemas aplikasi ke dalam Docker container*
 
-Job deploy mewakili tahap akhir, menunggu job build selesai dengan sukses sebelum dieksekusi. Job ini bertugas mendeploy Docker image ke Azure Web App.
+* ⚙️ **Build Tools:**
 
-1. Checkout repo: Kode dari repositori di-checkout.
+  * **Next.js**: Membuat static dan server-rendered output
+  * **Vite** *(opsional)*: Untuk dev build preview
+* 🐳 **Docker Build:**
 
-2. Deploy to Azure Web App: Menggunakan action azure/webapps-deploy@v2 untuk melakukan deployment.
+  * Image dibuat menggunakan `dockerfile` dengan konfigurasi Next.js production build
+  * Image disimpan dan didorong ke **Azure Container Registry**
+* 📂 **File yang terlibat:**
 
-  app-name: Menentukan nama Azure Web App yang akan dituju, yaitu CCWSRESERVE.
+  * `dockerfile`, `.dockerignore`
+  * `next.config.mjs`, `vite.config.ts`
+  * `tailwind.config.js`, `babel.config.js`
 
-  slot-name: Menentukan slot deployment yang akan digunakan, yaitu Production.
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
 
-  publish-profile: Menggunakan AZURE_WEBAPP_PUBLISH_PROFILE dari GitHub Secrets untuk autentikasi deployment.
+#### 3. **CI/CD – Deployment Stage**
 
-  images: Mengacu pada Docker image yang akan di-deploy, yaitu nextjs-app:latest dari AZURE_REGISTRY_URL. Ini membuat aplikasi live dan dapat diakses oleh pengguna.
+> *Tujuan: Mendeliver image yang telah dibangun ke lingkungan produksi (Azure App Service)*
 
-## Konfigurasi Docker
+* ☁️ **Platform:** Azure App Service
+* 🔐 **Autentikasi:** Menggunakan *Publish Profile* (`AZURE_WEBAPP_PUBLISH_PROFILE`) yang disimpan sebagai GitHub Secret.
+* 🚢 **Deployment:** Menarik image dari Azure Container Registry dan menjalankan container sebagai instance live.
+* 📂 **File yang terlibat:**
 
-Aplikasi menggunakan konfigurasi Docker yang efisien yang dibangun di atas base image Node.js 18 Alpine, yang memberikan jejak yang lebih kecil sambil mempertahankan fungsionalitas penuh. Dockerfile menetapkan direktori kerja, menyalin file package untuk instalasi dependensi, menjalankan npm ci untuk instalasi package yang dioptimalkan, dan menyalin seluruh kodebase aplikasi. Variabel lingkungan untuk integrasi Supabase dikonfigurasi langsung di dalam image, aplikasi dibangun untuk produksi, port 3000 diekspos untuk lalu lintas web, dan container dimulai menggunakan perintah npm start.
+  * `ci-cd.yaml` di dalam `.github/workflows`
+  * Secrets GitHub (`AZURE_REGISTRY_URL`, `AZURE_WEBAPP_PUBLISH_PROFILE`, dll.)
 
-Setup Docker ini menawarkan beberapa keuntungan termasuk penggunaan Alpine Linux untuk mengurangi ukuran image dan permukaan serangan, instalasi dependensi yang dioptimalkan melalui npm ci, variabel lingkungan yang telah dikonfigurasi untuk fungsionalitas langsung, dan ekspos port yang tepat untuk akses aplikasi web.
+---
 
-## Struktur Proyek
+### ⚙️ Teknologi yang Terlibat
 
-Repository mengikuti struktur standar dengan direktori .github/workflows yang berisi file ci-cd.yml yang mendefinisikan workflow GitHub Actions. Direktori root mencakup Dockerfile untuk containerisasi, package.json dan package-lock.json untuk manajemen dependensi Node.js, dan semua file dan direktori aplikasi Next.js standar.
+| Komponen          | Teknologi                      |
+| ----------------- | ------------------------------ |
+| Source Control    | Git + GitHub                   |
+| Build Tool        | Next.js, Vite                  |
+| Styling           | Tailwind CSS                   |
+| Backend           | Supabase                       |
+| Containerization  | Docker                         |
+| CI/CD Engine      | GitHub Actions                 |
+| Registry          | Azure Container Registry (ACR) |
+| Deployment Target | Azure App Service              |
 
-## Pengembangan Lokal
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
 
-Untuk bekerja dengan aplikasi secara lokal, mulailah dengan melakukan clone repository ke mesin pengembangan Anda dan navigasi ke direktori proyek. Instal semua dependensi menggunakan npm install, kemudian buat file .env.local dengan variabel lingkungan yang diperlukan termasuk NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_ANON_KEY. Anda kemudian dapat memulai server pengembangan menggunakan npm run dev, menjalankan pengujian dengan npm test, atau membangun untuk produksi menggunakan npm run build diikuti dengan npm start.
+### 🔐 Keamanan & Best Practice
 
-Untuk pengembangan Docker lokal, bangun image menggunakan docker build -t nextjs-app, jalankan container dengan docker run -p 3000:3000 nextjs-app, dan akses aplikasi di http://localhost:3000 di browser web Anda.
+* `.env.local` disertakan dalam `.gitignore` untuk mencegah kebocoran secrets.
+* Semua secrets disimpan di GitHub Secrets, tidak ditulis langsung dalam workflow.
+* Setiap tahap pipeline bersifat *fail-fast*, mencegah perubahan berbahaya ke production.
+* Konfigurasi linting & testing ketat untuk menjaga standar kualitas kode.
+---
 
-## Monitoring dan Troubleshooting
+## ⚙️ Alur Kerja Pipeline CI/CD
 
-GitHub Actions menyediakan monitoring komprehensif melalui tab Actions di repository Anda, di mana Anda dapat melacak status pipeline dan memeriksa log detail untuk setiap job. Azure Web App menawarkan monitoring kinerja melalui Azure Portal, Application Insights untuk pelacakan error runtime dan metrik kinerja, dan log deployment yang dapat diakses melalui pusat deployment Web App.
+Pipeline ini dibagi menjadi **tiga tahap utama**: `test`, `build`, dan `deploy`. Masing-masing job memiliki tanggung jawab spesifik dan saling bergantung satu sama lain untuk memastikan integritas sistem sebelum live.
 
-Masalah umum termasuk kegagalan build, yang biasanya menunjukkan secrets yang hilang atau salah dikonfigurasi, kegagalan Docker push yang menunjukkan masalah kredensial ACR, dan kegagalan deployment yang mungkin menunjukkan masalah konfigurasi Web App atau referensi image yang salah.
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
 
-## Kinerja dan Keamanan
+### 🧪 **Job: test** (Continuous Integration)
 
-Pipeline dioptimalkan untuk kecepatan melalui penggunaan npm ci untuk instalasi dependensi yang lebih cepat, keamanan melalui manajemen GitHub Secrets, keandalan melalui dependensi job yang berurutan, dan konsistensi melalui pembersihan cache npm. Langkah-langkah keamanan termasuk menyimpan data sensitif sebagai GitHub Secrets, menggunakan Alpine Linux untuk mengurangi permukaan serangan, memanfaatkan ACR untuk penyimpanan image yang aman, dan memanfaatkan fitur keamanan bawaan Azure Web App.
+Job `test` bertanggung jawab untuk **memverifikasi kualitas dan fungsionalitas kode** sebelum masuk ke tahap build dan deploy.
+1. **Checkout repository**
+   Kode dari repositori diambil dan disiapkan untuk eksekusi.
+2. **Setup Node.js**
+   Menyiapkan environment Node.js versi **18.x**.
+3. **Install dependencies**
+   Menggunakan `npm ci` untuk instalasi yang bersih dan konsisten dengan `package-lock.json`.
+4. **Run tests**
+   Menjalankan pengujian menggunakan `npm run test` untuk memastikan fungsionalitas berjalan dengan benar.
 
-## Kontribusi
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
 
-Kontributor harus membuat branch fitur dari main, mengimplementasikan perubahan mereka, memastikan semua pengujian lulus secara lokal, push ke branch mereka, dan membuat Pull Request. Pipeline CI/CD akan secara otomatis menguji semua perubahan, memberikan umpan balik tentang kualitas kode dan fungsionalitas sebelum penggabungan.
+### 🏗️ **Job: build** (Build Container Image)
 
-## Dukungan
+Job `build` hanya dijalankan setelah `test` berhasil. Job ini membuat aplikasi production-ready dalam bentuk Docker image.
+1. **Checkout repository**
+   Kode diambil kembali untuk proses build.
+2. **Setup Node.js**
+   Menyiapkan environment Node.js versi 18.
+3. **Install dependencies**
+   Melakukan instalasi dependensi seperti pada tahap test.
+4. **Build Next.js app**
+   Menjalankan `npm run build` untuk membundel aplikasi dalam mode produksi.
+5. **Check Next.js version**
+   Memverifikasi versi framework yang digunakan.
+6. **Login ke Azure Container Registry (ACR)**
+   Autentikasi ke ACR menggunakan `AZURE_REGISTRY_USERNAME` dan `AZURE_REGISTRY_PASSWORD` dari GitHub Secrets.
+7. **Build Docker image**
+   Membuat image dengan tag `latest` yang ditujukan ke URL registri ACR.
+8. **Push image ke ACR**
+   Mendorong Docker image ke **Azure Container Registry** untuk siap di-deploy.
 
-Untuk troubleshooting masalah GitHub Actions, periksa tab Actions dan log workflow di repository Anda. Masalah terkait Azure harus ditangani melalui Azure Portal dan dokumentasi resmi. Masalah spesifik Next.js dapat diselesaikan menggunakan dokumentasi resmi Next.js, sedangkan masalah Supabase harus diselidiki melalui dashboard dan dokumentasi Supabase.
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+
+### 🚀 **Job: deploy** (Continuous Deployment)
+
+Job `deploy` adalah tahap akhir yang dilakukan setelah build sukses. Proses ini akan menjadikan aplikasi live di Azure.
+
+1. **Checkout repository**
+   Mengambil ulang kode dari repository.
+2. **Deploy to Azure Web App**
+   Menggunakan GitHub Action `azure/webapps-deploy@v2`.
+   * **app-name**: `CCWSRESERVE`
+   * **slot-name**: `Production`
+   * **publish-profile**: Menggunakan `AZURE_WEBAPP_PUBLISH_PROFILE` dari GitHub Secrets
+   * **images**: `nextjs-app:latest` dari `AZURE_REGISTRY_URL`
+
+---
+## ⚙️ Implementasi Pipeline
+
+### 1️⃣ Job `test` – Continuous Integration
+
+#### 📁 Struktur File Terkait
+
+| File/Folder                        | Peran di Job `test`                      |
+| ---------------------------------- | ---------------------------------------- |
+| `.github/workflows/ci-cd.yaml`     | Mendefinisikan job `test`                |
+| `jest.config.js` & `jest.setup.js` | Konfigurasi dan bootstrap unit-test      |
+| `vitest.config.js` *(opsional)*    | Alternatif framework test                |
+| `.eslintrc.json`                   | Quality-gate linting (jika dipanggil)    |
+| `package.json`                     | Script `npm run test`, daftar dependensi |
+
+#### 📝 Cuplikan CI-test
+
+```yaml
+test:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with: { node-version: '18' }
+    - run: npm ci           # instal dependensi bersih
+    - run: npm run test     # jalankan unit-test
+```
+
+#### 🚦 Tahap Eksekusi
+1. **Checkout repo** – code di-pull ke runner.
+2. **Setup Node.js 18** – environment konsisten.
+3. **Install dependencies** – `npm ci` memastikan versi luk-in.
+4. **Run tests** – menjalankan Jest/Vitest; workflow gagal bila ada tes gagal.
+
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+
+
+### 2️⃣ Job `build` – Build Container Image
+#### 📁 Struktur File Terkait
+
+| File                                     | Fungsi                              |
+| ---------------------------------------- | ----------------------------------- |
+| `dockerfile`                             | Instruksi pembuatan image prod      |
+| `.dockerignore`                          | Mengecilkan konteks build           |
+| `next.config.mjs` & `tailwind.config.js` | Konfigurasi build Next.js & styling |
+| `package.json`                           | Script `npm run build`              |
+| `.github/workflows/ci-cd.yaml`           | Bagian job `build`                  |
+
+#### 📝 Cuplikan CI-build
+
+```yaml
+build:
+  runs-on: ubuntu-latest
+  needs: test
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with: { node-version: '18' }
+    - run: npm ci
+    - run: npm run build                 # Next.js production build
+    - run: npx next --version            # verifikasi versi
+    - name: Login ACR
+      run: echo "${{ secrets.AZURE_REGISTRY_PASSWORD }}" |
+           docker login ${{ secrets.AZURE_REGISTRY_URL }} \
+           -u ${{ secrets.AZURE_REGISTRY_USERNAME }} --password-stdin
+    - run: docker build -t ${{ secrets.AZURE_REGISTRY_URL }}/nextjs-app:latest .
+    - run: docker push  ${{ secrets.AZURE_REGISTRY_URL }}/nextjs-app:latest
+```
+
+#### 🚦 Tahap Eksekusi
+
+1. **Dependensi Node** dipasang ulang (aman setelah lint/test).
+2. **Build Next.js** – `npm run build` menghasilkan output prod di `.next/`.
+3. **Login ke ACR** menggunakan secrets.
+4. **Docker build & push** – image bertag `latest` dikirim ke registry.
+
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+
+### 3️⃣ Job `deploy` – Continuous Deployment
+
+#### 📁 Struktur File Terkait
+
+| File/Secret                    | Peran                                           |
+| ------------------------------ | ----------------------------------------------- |
+| `ci-cd.yaml`                   | Bagian job `deploy`                             |
+| `AZURE_WEBAPP_PUBLISH_PROFILE` | Autentikasi deploy (GitHub Secret)              |
+| `AZURE_REGISTRY_URL`           | Lokasi image di ACR                             |
+| `dockerfile`                   | Basis container yang akan dijalankan oleh Azure |
+
+#### 📝 Cuplikan YAML
+
+```yaml
+deploy:
+  runs-on: ubuntu-latest
+  needs: build
+  steps:
+    - uses: actions/checkout@v3
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: CCWSRESERVE
+        slot-name: Production
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        images: '${{ secrets.AZURE_REGISTRY_URL }}/nextjs-app:latest'
+```
+
+#### 🚦 Tahap Eksekusi
+
+1. **Checkout repo** (tidak wajib sebenarnya, tapi berguna untuk log).
+2. **Deploy ke Azure Web App** via action resmi:
+
+   * Menargetkan **app** `CCWSRESERVE`, slot **Production**.
+   * Menarik image `nextjs-app:latest` dari ACR.
+   * Azure menjalankan container & melakukan health check otomatis.
+
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+
+### 🧩 Catatan Penting
+
+* **Fail-fast:** Jika `test` gagal, `build` & `deploy` berhenti ➜ menjaga integritas prod.
+* **Secrets**: Semua kredensial (ACR & publish profile) disimpan di **GitHub Secrets**, tidak pernah ditulis di kode.
+* **Scalability:** Azure Web App mendukung slot deployment & auto-scaling; image dapat dipromosikan tanpa downtime.
+---
+
+## ⚠️ Error / Issue GitHub Actions
+Dalam proses pengembangan dan penerapan pipeline CI/CD menggunakan GitHub Actions pada proyek ini, terdapat beberapa kendala dan error yang sempat terjadi. Dokumentasi ini bertujuan untuk mencatat permasalahan yang muncul beserta analisis penyebab dan solusi yang dilakukan. Dengan demikian, diharapkan dapat menjadi referensi bagi pengembang lain apabila menghadapi masalah serupa di masa mendatang.
+Siap, ini versi lengkapnya dengan penambahan tautan ke GitHub Actions untuk referensi error-nya:
+
+---
+### ❌ Error  `sh: 1: jest: not found`
+
+**Deskripsi Masalah:**
+Pada eksekusi perdana pipeline, proses `npm run test` gagal dijalankan karena `jest` tidak ditemukan di environment runner. Log error:
+
+```bash
+sh: 1: jest: not found
+```
+
+📍 [Lihat detail error di GitHub Actions](https://github.com/AryasatyaWidyatna/roomreservation/actions/runs/15559618252/job/43808428239)
+
+**Penyebab:**
+Error ini disebabkan oleh belum terinstallnya dependensi project, termasuk `jest`, sebelum menjalankan perintah `npm run test`.
+
+**Solusi:**
+✔️ Tambahkan step `npm install` sebelum `npm run test` agar semua dependensi terinstall:
+
+```yaml
+- name: Install dependencies
+  run: npm install
+```
+
+✔️ Pastikan juga `jest` tercantum di `devDependencies` pada `package.json`:
+
+```bash
+npm install --save-dev jest
+```
+
+**Status:**
+✅ Sudah diperbaiki — pipeline berhasil berjalan setelah step `npm install` ditambahkan dan `jest` terinstall dengan benar.
+
+---
+
+### ❌ Error `sh: 1: next: not found`
+
+**Deskripsi Masalah:**
+Pipeline gagal saat menjalankan `npm run build` karena perintah `next` tidak dikenali oleh environment runner. Log error:
+
+```bash
+sh: 1: next: not found
+```
+
+📍 [Lihat detail error di GitHub Actions](https://github.com/AryasatyaWidyatna/roomreservation/actions/runs/15559800186)
+
+**Penyebab:**
+Error ini muncul karena dependensi project, termasuk framework **Next.js**, belum terinstall sebelum proses build dijalankan.
+
+**Solusi:**
+✔️ Sama seperti error sebelumnya, solusi utamanya adalah menambahkan step `npm install` sebelum step `npm run build`, agar semua dependensi, termasuk `next`, terinstall dengan baik.
+
+```yaml
+- name: Install dependencies
+  run: npm install
+```
+
+✔️ Pastikan juga bahwa `next` ada di `dependencies` atau `devDependencies` di `package.json`:
+
+```bash
+npm install next
+```
+
+**Status:**
+✅ Sudah diperbaiki — error ini tidak muncul lagi setelah `npm install` ditambahkan pada awal proses pipeline.
+
+---
+### ❌ Error `SyntaxError: Unexpected token, expected "," (8:22)`
+
+**Deskripsi Masalah:**
+Test unit gagal dijalankan karena error parsing syntax oleh Babel saat mengeksekusi file `page.test.jsx`. Log error mengarah ke bagian mock `next/link`:
+
+```js
+jest.mock('next/link', () => {
+  return ({ children }: { children: React.ReactNode }) => children;
+});
+```
+
+📍 [Lihat detail error di GitHub Actions](https://github.com/AryasatyaWidyatna/roomreservation/actions/runs/15585385944/job/43890167468)
+
+**Penyebab:**
+Jest dan Babel tidak mengenali anotasi tipe TypeScript (`: { children: React.ReactNode }`) karena file `page.test.jsx` masih berformat `.jsx`, bukan `.tsx`, dan tidak dikompilasi dengan dukungan TypeScript.
+
+**Solusi:**
+✔️ Ubah syntax menjadi compatible dengan JavaScript biasa, misalnya:
+
+```js
+jest.mock('next/link', () => {
+  return ({ children }) => children;
+});
+```
+
+Atau, jika ingin menggunakan TypeScript-style:
+
+1. Ubah ekstensi file menjadi `.tsx`
+2. Pastikan Jest dan Babel dikonfigurasi untuk mendukung TypeScript
+
+**Status:**
+✅ Sudah diperbaiki dengan menghapus anotasi tipe agar sesuai format JavaScript standar.
+
+---
+### ❌ Error `Jest encountered an unexpected token (JSX not enabled)`
+
+**Deskripsi Masalah**  
+Saat menjalankan `npm run test`, Jest gagal mem‐parse file **`app/page.jsx`** yang berisi JSX karena preset Babel untuk React belum diaktifkan.
+
+```bash
+SyntaxError: Support for the experimental syntax 'jsx' isn't currently enabled (52:5)
+...
+Add @babel/preset-react to the 'presets' section of your Babel config to enable transformation.
+````
+
+📍 [Detail log GitHub Actions](https://github.com/AryasatyaWidyatna/roomreservation/actions/runs/15586049222/job/43892419211)
+
+**Penyebab**
+Jest menggunakan Babel untuk mentransformasi file test, tetapi konfigurasi Babel (`babel.config.js`) belum menambahkan **`@babel/preset-react`** sehingga sintaks JSX di file `.jsx` tidak dikenali.
+
+**Solusi**
+
+1. **Pasang preset React**
+
+   ```bash
+   npm install --save-dev @babel/preset-react
+   ```
+2. **Perbarui `babel.config.js`**
+
+   ```js
+   module.exports = {
+     presets: [
+       '@babel/preset-env',
+       '@babel/preset-react',   // ➜ tambahkan baris ini
+     ],
+   };
+   ```
+3. Pastikan Jest membaca konfigurasi Babel yang sama (file `babel.config.js` berada di root repo).
+**Status**
+✅ **Fixed** — Setelah preset React ditambahkan dan pipeline dijalankan ulang, Jest berhasil mem-parse file JSX dan semua test lulus.
+
+---
+
+### ❌ Error `React is not defined` saat `next build`
+
+**Deskripsi Masalah**  
+Pipeline gagal saat menjalankan `npm run build` karena terjadi error saat proses **prerendering halaman `/not-found`**. Log menunjukkan bahwa **React tidak dikenali**:
+
+```bash
+ReferenceError: React is not defined
+````
+
+📍 [Detail log GitHub Actions](https://github.com/AryasatyaWidyatna/roomreservation/actions/runs/15587405115/job/43897234064)
+
+**Penyebab**
+File `app/_not-found/page.jsx` tidak menyertakan `import React from "react";`. Meskipun dengan Next.js 13+ (App Router), import `React` *tidak wajib* secara eksplisit, **hal ini tetap diperlukan saat JSX digunakan langsung dalam file JS tanpa transpiler seperti SWC aktif**.
+
+> SWC dinonaktifkan karena penggunaan custom `babel.config.js`:
+>
+> ```
+> Disabled SWC as replacement for Babel because of custom Babel configuration
+> ```
+
+**Solusi**
+Tambahkan baris berikut di paling atas file `app/_not-found/page.jsx`:
+
+```js
+import React from 'react';
+```
+
+**Status**
+✅ **Fixed** — Setelah menambahkan `import React` di file `_not-found`, pipeline berhasil menyelesaikan `next build`.
+
+---
+
+### ❌ Error `ReferenceError: React is not defined` saat `next build`
+
+**Deskripsi Masalah**  
+Build gagal pada proses **prerendering** halaman **`/admin/room`**. Log menunjukkan `React is not defined`.
+
+```bash
+Error occurred prerendering page "/admin/room"
+ReferenceError: React is not defined
+````
+
+📍 [Log lengkap GitHub Actions](https://github.com/AryasatyaWidyatna/roomreservation/actions/runs/15590268317/job/43907340149)
+
+**Penyebab**
+File **`app/admin/room/page.jsx`** memakai JSX tetapi tidak menyertakan `import React` di awal file. Karena SWC dinonaktifkan (custom `babel.config.js`), Babel mengharuskan import eksplisit.
+
+**Solusi**
+Tambahkan baris berikut di paling atas `app/admin/room/page.jsx`:
+
+```js
+import React from 'react';
+```
+
+**Status**
+✅ Fixed — Setelah menambahkan import di atas, proses `next build` berhasil tanpa error.
+
+---
+### ❌ Error: `Cannot find module '@/lib/supabaseClient'`
+
+**Deskripsi Masalah:**
+Saat menjalankan perintah `npm run test` di GitHub Actions, salah satu file test yaitu `app/login/page.test.jsx` gagal karena tidak dapat menemukan module `'@/lib/supabaseClient'`.
+
+```bash
+Cannot find module '@/lib/supabaseClient' from 'app/login/page.test.jsx'
+```
+
+📍 [Lihat detail error di GitHub Actions](https://github.com/AryasatyaWidyatna/roomreservation/actions/runs/15697331270)
+
+**Penyebab:**
+Import path `'@/lib/supabaseClient'` menggunakan alias `'@'` yang biasanya didefinisikan di `jsconfig.json`. Namun, secara default, environment GitHub Actions dan Jest tidak mengenali alias ini kecuali dikonfigurasi secara eksplisit.
+
+**Solusi:**
+Menambahkan konfigurasi `moduleNameMapper` agar Jest dapat mengenali alias `'@'`:
+
+1. Pastikan di `jest.config.js` atau `jest.config.mjs` terdapat:
+
+   ```js
+   module.exports = {
+     // konfigurasi lainnya...
+     moduleNameMapper: {
+       '^@/(.*)$': '<rootDir>/$1',
+     },
+   };
+   ```
+
+2. Pastikan juga bahwa struktur direktori proyek sesuai, yakni folder `lib` berada langsung di root repository.
+
+**Status:**
+✅ Sudah diperbaiki — pipeline berhasil melewati tahap `test` setelah konfigurasi di atas diterapkan.
+
+---
+### ⚠️ Masalah yang Mungkin Dihadapi
+
+Saat melakukan testing, penting untuk **tidak menguji seluruh halaman atau layout secara menyeluruh**, terutama ketika sebagian besar elemen hanya bersifat visual atau statis.
+
+**Contoh kasus:**  
+Pada komponen halaman utama terdapat bagian seperti berikut:
+
+```jsx
+{/* Glassmorphism Card */}
+<div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-12 shadow-2xl">
+  ...
+  <Link href="/register">
+    <button className="group ...">
+      Regist sebagai Client
+    </button>
+  </Link>
+</div>
+````
+
+Dalam kasus ini, cukup **fokus menguji tombol "Regist sebagai Client"**, karena:
+
+* Tombol tersebut **berpengaruh pada navigasi** ke proses registrasi.
+* Bagian lain seperti `<h1>`, `<p>`, atau efek visual (`blur`, `gradient`, dll) bersifat presentasional dan tidak perlu dites fungsionalitasnya.
+
+🚫 *Kesalahan umum:* Melakukan test untuk seluruh struktur `<div>` dan elemen visual secara berlebihan.
+
+✅ *Solusi tepat:*
+Lakukan pengujian terhadap komponen yang memicu aksi penting (misal: navigasi, form submission, interaksi user) agar proses testing **lebih efisien dan tidak redundant**.
+
+---
+## 🧑‍💻 Local Development
+
+```bash
+git clone https://github.com/AryasatyaWidyatna/roomreservation
+cd roomreservation
+npm install
+npm run dev
+```
+
+---
+
+## 🙋‍♀️ Developers
+* Arayzi Rayyansyah       (5026221194) - Lead
+* Dicky Febri Primadhani  (5026221036) - Member
+* M. Rafi Novyansyah      (5026221171) - Member
+* Arya Satya Widyatna     (5026221207) - Member
+
+---
