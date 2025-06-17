@@ -58,12 +58,14 @@ function ClientHistory() {
     fetchClientHistory();
   }, []);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    // Redirect atau refresh halaman setelah logout
-    window.location.reload();
-  };
-
+   const handleLogout = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error('Logout failed:', error.message);
+    return;
+  }
+  router.push('../register'); // arahkan ke halaman login atau homepage
+};
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -97,9 +99,9 @@ function ClientHistory() {
               <button
                 onClick={handleLogout}
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-              > <a href="../login">
+              > 
                 Logout
-                </a>
+                
               </button>
             </div>
 
