@@ -1,6 +1,9 @@
+// Mock environment variables first
+process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://cradzbdfhvrzcmlpumrn.supabase.co';
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyYWR6YmRmaHZyemNtbHB1bXJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1OTA1MTksImV4cCI6MjA2NDE2NjUxOX0.qCJgJ1kuk0RTTw7ACL3AWC9AccOEer6hj8FegmYac4k';
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
-import LoginPage from './page';
 
 // Create mock supabase object
 const mockSignInWithPassword = jest.fn();
@@ -10,7 +13,7 @@ const mockSupabase = {
   },
 };
 
-// Mock dependencies
+// Mock dependencies BEFORE importing the component
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
@@ -26,7 +29,10 @@ jest.mock('next/link', () => {
 // Mock the supabase module completely
 jest.mock('@/lib/supabaseClient', () => ({
   supabase: mockSupabase,
-}), { virtual: true });
+}));
+
+// Import component AFTER mocking
+import LoginPage from './page';
 
 describe('LoginPage', () => {
   const mockPush = jest.fn();
