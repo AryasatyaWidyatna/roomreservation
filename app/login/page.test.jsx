@@ -13,7 +13,7 @@ jest.mock('next/navigation', () => ({
 }));
 
 // Mock Supabase client
-jest.mock(''../../lib/supabaseClient'', () => ({
+jest.mock('../../lib/supabaseClient', () => ({
   supabase: {
     auth: {
       signInWithPassword: jest.fn(() =>
