@@ -2,20 +2,11 @@ import { render, screen } from '@testing-library/react';
 import LoginPage from '@/app/login/page';
 import '@testing-library/jest-dom';
 
-// Mock router supaya tidak error saat render
+// Hanya mock router agar tidak error
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
   }),
-}));
-
-// Mock Supabase supaya tidak dijalankan saat test
-jest.mock('@/lib/supabaseClient', () => ({
-  supabase: {
-    auth: {
-      signInWithPassword: jest.fn(),
-    },
-  },
 }));
 
 describe('LoginPage UI', () => {
