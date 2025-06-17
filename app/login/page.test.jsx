@@ -3,9 +3,13 @@ import LoginPage from '../../app/login/page'; // sesuaikan path jika berbeda
 import '@testing-library/jest-dom';
 import React from 'react';
 
+const SUPABASE_URL = 'https://cradzbdfhvrzcmlpumrn.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh...';
+
 describe('LoginPage', () => {
   test('renders login heading and form elements', () => {
     render(<LoginPage />);
+    
 
     // Judul halaman
     expect(screen.getByRole('heading', { name: /masuk akun/i })).toBeInTheDocument();
