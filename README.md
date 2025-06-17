@@ -26,9 +26,7 @@ Job test bertanggung jawab untuk memverifikasi kualitas dan fungsionalitas kode.
 
 3. Install dependencies: Dependensi proyek diinstal menggunakan npm ci untuk instalasi yang bersih dan konsisten.
 
-4. Clean npm cache: Cache npm dibersihkan untuk memastikan lingkungan instalasi yang segar.
-
-5. Run tests: Suite pengujian dijalankan menggunakan npm run test untuk memverifikasi fungsionalitas kode.
+4. Run tests: Suite pengujian dijalankan menggunakan npm run test untuk memverifikasi fungsionalitas kode.
 
 
 
