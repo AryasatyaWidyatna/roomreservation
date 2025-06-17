@@ -2,10 +2,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
-import { Mail, Lock, ArrowRight, Building2, AlertCircle, CheckCircle } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Building2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
-
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -70,11 +69,15 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email Field */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-700 flex items-center gap-2"
+              >
                 <Mail className="w-4 h-4" />
                 Email
               </label>
               <input
+                id="email"
                 type="email"
                 placeholder="Masukkan email"
                 value={email}
@@ -86,11 +89,15 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-700 flex items-center gap-2"
+              >
                 <Lock className="w-4 h-4" />
                 Password
               </label>
               <input
+                id="password"
                 type="password"
                 placeholder="Masukkan password"
                 value={password}
