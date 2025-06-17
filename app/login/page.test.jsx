@@ -46,7 +46,7 @@ describe('LoginPage', () => {
   });
 
   test('calls Supabase login on form submit', async () => {
-    const { supabase } = require('@/lib/supabaseClient');
+    const { supabase } = require('../../lib/supabaseClient');
     render(<LoginPage />);
 
     fireEvent.change(screen.getByLabelText(/email/i), {
