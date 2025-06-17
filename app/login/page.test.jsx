@@ -2,6 +2,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import LoginPage from '@/app/login/page'; 
 import '@testing-library/jest-dom';
 import React from 'react';
+import { supabase } from '../../lib/supabaseClient';
+
 
 // Mock router
 jest.mock('next/navigation', () => ({
@@ -11,7 +13,7 @@ jest.mock('next/navigation', () => ({
 }));
 
 // Mock Supabase client
-jest.mock('@/lib/supabaseClient', () => ({
+jest.mock(''../../lib/supabaseClient'', () => ({
   supabase: {
     auth: {
       signInWithPassword: jest.fn(() =>
