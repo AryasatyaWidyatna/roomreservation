@@ -8,7 +8,10 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
-    // Mengabaikan import CSS, SCSS, dan sejenis
+    // Alias Next.js agar Jest bisa resolve import @/
+    '^@/(.*)$': '<rootDir>/$1',
+
+    // Ignore CSS and friends
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   transform: {
