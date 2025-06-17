@@ -136,11 +136,6 @@ function ClientHistory() {
                 </svg>
                 <h3 className="mt-2 text-sm font-medium text-gray-900">Tidak ada reservasi</h3>
                 <p className="mt-1 text-sm text-gray-500">Anda belum memiliki riwayat reservasi.</p>
-                <div className="mt-6">
-                  <button className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                    Buat Reservasi Baru
-                  </button>
-                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
