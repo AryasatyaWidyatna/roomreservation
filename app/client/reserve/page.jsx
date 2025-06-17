@@ -133,7 +133,7 @@ function ReserveRoom() {
                 onClick={handleLogout}
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
               >
-                <a href="../login">
+                <a href="../../app">
                 Logout
                  </a>
               </button>
