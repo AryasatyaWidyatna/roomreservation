@@ -2,7 +2,16 @@ import { render, screen } from '@testing-library/react';
 import LoginPage from '@/app/login/page';
 import '@testing-library/jest-dom';
 
-// Hanya mock router agar tidak error
+// 🧠 Mock supabaseClient.js agar tidak error saat test
+jest.mock('@/lib/supabaseClient', () => ({
+  supabase: {
+    auth: {
+      signInWithPassword: jest.fn(),
+    },
+  },
+}));
+
+// Mock router agar tidak error saat push
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
@@ -16,7 +25,7 @@ describe('LoginPage UI', () => {
     expect(screen.getByText(/Selamat datang kembali!/i)).toBeInTheDocument();
   });
 
-  it('renders email and password fields with correct labels and placeholders', () => {
+  it('renders email and password fields', () => {
     render(<LoginPage />);
     expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Masukkan email/i)).toBeInTheDocument();
