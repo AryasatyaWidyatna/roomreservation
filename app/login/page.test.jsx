@@ -8,6 +8,13 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
 
+jest.mock('@/lib/supabaseClient', () => ({
+  supabase: {
+    auth: {
+      signInWithPassword: jest.fn(),
+    },
+  },
+}));
 
 jest.mock('next/link', () => {
   return ({ children, href, ...props }) => (
@@ -17,6 +24,15 @@ jest.mock('next/link', () => {
   );
 });
 
+describe('LoginPage', () => {
+  const mockPush = jest.fn();
+  
+  beforeEach(() => {
+    useRouter.mockReturnValue({
+      push: mockPush,
+    });
+    jest.clearAllMocks();
+  });
 
   it('renders login form correctly', () => {
     render(<LoginPage />);
