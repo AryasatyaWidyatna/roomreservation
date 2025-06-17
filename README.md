@@ -1,4 +1,4 @@
-# 🏨 CCWS Room Reservation
+# 🏬 CCWS Room Reservation 🏢
 
 ![CI/CD](https://github.com/AryasatyaWidyatna/roomreservation/actions/workflows/ci-cd.yaml/badge.svg)
 [![Next.js](https://img.shields.io/badge/Next.js-13-blue)](https://nextjs.org/)
