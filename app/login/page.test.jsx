@@ -1,19 +1,18 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '../lib/supabaseClient';
 import LoginPage from './page';
+
+// Create mock supabase object
+const mockSignInWithPassword = jest.fn();
+const mockSupabase = {
+  auth: {
+    signInWithPassword: mockSignInWithPassword,
+  },
+};
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
-}));
-
-jest.mock('../lib/supabaseClient', () => ({
-  supabase: {
-    auth: {
-      signInWithPassword: jest.fn(),
-    },
-  },
 }));
 
 jest.mock('next/link', () => {
@@ -23,6 +22,11 @@ jest.mock('next/link', () => {
     </a>
   );
 });
+
+// Mock the supabase module completely
+jest.mock('@/lib/supabaseClient', () => ({
+  supabase: mockSupabase,
+}), { virtual: true });
 
 describe('LoginPage', () => {
   const mockPush = jest.fn();
@@ -66,7 +70,7 @@ describe('LoginPage', () => {
   });
 
   it('shows loading state when form is submitted', async () => {
-    supabase.auth.signInWithPassword.mockResolvedValue({
+    mockSignInWithPassword.mockResolvedValue({
       data: { user: { id: '1' } },
       error: null,
     });
@@ -87,7 +91,7 @@ describe('LoginPage', () => {
   });
 
   it('handles successful login', async () => {
-    supabase.auth.signInWithPassword.mockResolvedValue({
+    mockSignInWithPassword.mockResolvedValue({
       data: { user: { id: '1' } },
       error: null,
     });
@@ -103,7 +107,7 @@ describe('LoginPage', () => {
     fireEvent.click(submitButton);
     
     await waitFor(() => {
-      expect(supabase.auth.signInWithPassword).toHaveBeenCalledWith({
+      expect(mockSignInWithPassword).toHaveBeenCalledWith({
         email: 'test@example.com',
         password: 'password123',
       });
@@ -113,7 +117,7 @@ describe('LoginPage', () => {
 
   it('handles login error', async () => {
     const errorMessage = 'Invalid email or password';
-    supabase.auth.signInWithPassword.mockResolvedValue({
+    mockSignInWithPassword.mockResolvedValue({
       data: null,
       error: { message: errorMessage },
     });
@@ -136,7 +140,7 @@ describe('LoginPage', () => {
 
   it('clears error message when form is resubmitted', async () => {
     // First submission with error
-    supabase.auth.signInWithPassword.mockResolvedValueOnce({
+    mockSignInWithPassword.mockResolvedValueOnce({
       data: null,
       error: { message: 'Invalid credentials' },
     });
@@ -156,7 +160,7 @@ describe('LoginPage', () => {
     });
 
     // Second submission should clear error
-    supabase.auth.signInWithPassword.mockResolvedValueOnce({
+    mockSignInWithPassword.mockResolvedValueOnce({
       data: { user: { id: '1' } },
       error: null,
     });
@@ -170,7 +174,7 @@ describe('LoginPage', () => {
   });
 
   it('prevents form submission when loading', async () => {
-    supabase.auth.signInWithPassword.mockImplementation(
+    mockSignInWithPassword.mockImplementation(
       () => new Promise(resolve => setTimeout(() => resolve({ data: null, error: null }), 1000))
     );
 
@@ -191,7 +195,7 @@ describe('LoginPage', () => {
     fireEvent.click(submitButton);
     
     await waitFor(() => {
-      expect(supabase.auth.signInWithPassword).toHaveBeenCalledTimes(1);
+      expect(mockSignInWithPassword).toHaveBeenCalledTimes(1);
     });
   });
 
