@@ -113,7 +113,19 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
                 </button>
               </Link> 
-            
+            <Link href="/login">
+              <button className="group relative bg-gradient-to-r from-blue-500 to-indigo-600 
+               hover:from-blue-600 hover:to-indigo-700 text-white font-bold 
+               py-4 px-8 rounded-2xl transition-all duration-300 transform 
+               hover:scale-105 hover:shadow-2xl flex items-center gap-3 text-lg"
+               > 
+               <Users className="w-5 h-5" /> Login sebagai Client
+               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+               <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 
+                 group-hover:opacity-100 transition-opacity blur-xl" />
+                 </button>
+                 </Link>
+
 
 
               
